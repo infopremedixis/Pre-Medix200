@@ -1,0 +1,1487 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Medix 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --info: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --option-bg: #ffffff;
+            --option-hover: #f1f3ff;
+            --option-selected: #4361ee;
+            --option-correct: #4ade80;
+            --option-incorrect: #f87171;
+            --answered: #4cc9f0;
+            --current: #f72585;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 7px;
+            font-size: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .header p {
+            font-size: 8px;
+            opacity: 0.9;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary), var(--secondary));
+        }
+
+        .content {
+            padding: 10px;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            gap: 4px;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 4px;
+            border-radius: 4px;
+            background: var(--light);
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            font-size: 8px;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn.blog {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            color: white;
+        }
+
+        .social-btn.whatsapp {
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            color: white;
+        }
+
+        .social-btn.contact {
+            background: linear-gradient(45deg, #4361ee, #3a0ca3);
+            color: white;
+        }
+
+        .login-form, .student-form, .quiz-container, .result-container {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 9px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 4px 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 9px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 1px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+        }
+
+        .btn-info {
+            background: var(--info);
+        }
+
+        .timer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            background: var(--light);
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 9px;
+        }
+
+        .progress-container {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .question-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+            justify-content: center;
+        }
+
+        .question-btn {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background: var(--light);
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 9px;
+        }
+
+        .question-btn:hover {
+            background: var(--option-hover);
+            border-color: var(--primary);
+        }
+
+        .question-btn.current {
+            background: var(--current);
+            color: white;
+            border-color: var(--current);
+        }
+
+        .question-btn.answered {
+            background: var(--answered);
+            color: white;
+            border-color: var(--answered);
+        }
+
+        .question {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .option {
+            padding: 5px;
+            background: var(--option-bg);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .option:hover {
+            background: var(--option-hover);
+            border-color: var(--primary);
+        }
+
+        .option.selected {
+            background: var(--option-selected);
+            color: white;
+            border-color: var(--option-selected);
+        }
+
+        .option.correct {
+            background: var(--option-correct);
+            color: white;
+            border-color: var(--option-correct);
+        }
+
+        .option.incorrect {
+            background: var(--option-incorrect);
+            color: white;
+            border-color: var(--option-incorrect);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .navigation-buttons button {
+            flex: 1;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+            font-size: 9px;
+        }
+
+        .result-table th, .result-table td {
+            padding: 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .result-table th {
+            background: var(--light);
+            font-weight: 600;
+        }
+
+        .result-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .student-info {
+            background: var(--light);
+            padding: 6px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 9px;
+        }
+
+        .student-info h3 {
+            margin-bottom: 4px;
+            color: var(--primary);
+            font-size: 11px;
+        }
+
+        .reasoning-container {
+            margin-top: 10px;
+        }
+
+        .reasoning-item {
+            background: var(--light);
+            padding: 6px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            font-size: 9px;
+        }
+
+        .reasoning-item h4 {
+            color: var(--primary);
+            margin-bottom: 4px;
+            font-size: 10px;
+        }
+
+        .reasoning-item p {
+            margin-bottom: 3px;
+            line-height: 1.4;
+        }
+
+        .icon {
+            margin-right: 3px;
+            font-size: 10px;
+        }
+
+        .whatsapp-fixed {
+            position: fixed;
+            bottom: 8px;
+            right: 8px;
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+            text-decoration: none;
+        }
+
+        .error {
+            color: #e63946;
+            font-size: 8px;
+            margin-top: 2px;
+            display: none;
+        }
+
+        .reasoning-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .modal-header h3 {
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .social-buttons {
+                flex-direction: column;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            body {
+                font-size: 9px;
+                padding: 5px;
+            }
+
+            .content {
+                padding: 8px;
+            }
+
+            .question-nav {
+                gap: 3px;
+            }
+
+            .question-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pre-Medix 2025</h1>
+            <p>Test No: Pre-Medix-02</p>
+        </div>
+
+        <div class="content">
+            <div class="social-buttons">
+                <a href="https://pre-medix.blogspot.com/?m=1" class="social-btn blog" target="_blank">
+                    <i class="fas fa-blog icon"></i> Blogger Website
+                </a>
+                <a href="https://whatsapp.com/channel/0029VbBGhht7j6g3r478FG0i" class="social-btn whatsapp" target="_blank">
+                    <i class="fab fa-whatsapp icon"></i> WhatsApp Channel
+                </a>
+                <a href="mailto:info.premedixis@gmail.com" class="social-btn contact">
+                    <i class="fas fa-envelope icon"></i> Contact Us
+                </a>
+            </div>
+
+            <div id="login-form" class="login-form active">
+                <div class="form-group">
+                    <label for="access-code">Access Code</label>
+                    <input type="password" id="access-code" class="form-control" placeholder="Enter your access code">
+                    <div id="login-error" class="error">Invalid access code. Please try again.</div>
+                </div>
+                <button id="login-btn" class="btn btn-block">Access Quiz</button>
+            </div>
+
+            <div id="student-form" class="student-form">
+                <h2 style="text-align: center; margin-bottom: 8px; font-size: 12px;">Student Information</h2>
+                <div class="form-group">
+                    <label for="student-name">Student Name</label>
+                    <input type="text" id="student-name" class="form-control" placeholder="Enter your full name">
+                    <div id="name-error" class="error">Please enter your name</div>
+                </div>
+                <div class="form-group">
+                    <label for="father-name">Father's Name</label>
+                    <input type="text" id="father-name" class="form-control" placeholder="Enter your father's name">
+                    <div id="father-error" class="error">Please enter your father's name</div>
+                </div>
+                <div class="form-group">
+                    <label for="mdcat-appearance">MDCAT Appearance</label>
+                    <select id="mdcat-appearance" class="form-control">
+                        <option value="">Select your status</option>
+                        <option value="fresh">Fresh</option>
+                        <option value="repeater">Repeater</option>
+                    </select>
+                    <div id="mdcat-error" class="error">Please select your MDCAT status</div>
+                </div>
+                <div class="form-group">
+                    <label for="fsc-marks">FSC Marks Obtained</label>
+                    <input type="number" id="fsc-marks" class="form-control" placeholder="Enter your FSC marks" min="0" max="1200">
+                    <div id="fsc-error" class="error">Please enter valid FSC marks</div>
+                </div>
+                <div class="form-group">
+                    <label for="fsc-total">FSC Total Marks</label>
+                    <select id="fsc-total" class="form-control">
+                        <option value="1100">1100</option>
+                        <option value="1200">1200</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="metric-marks">Metric Marks Obtained</label>
+                    <input type="number" id="metric-marks" class="form-control" placeholder="Enter your Metric marks" min="0" max="1200">
+                    <div id="metric-error" class="error">Please enter valid Metric marks</div>
+                </div>
+                <div class="form-group">
+                    <label for="metric-total">Metric Total Marks</label>
+                    <select id="metric-total" class="form-control">
+                        <option value="1100">1100</option>
+                        <option value="1200">1200</option>
+                    </select>
+                </div>
+                <button id="start-quiz-btn" class="btn btn-block">Start Quiz</button>
+            </div>
+
+            <div id="quiz-container" class="quiz-container">
+                <div class="timer-container">
+                    <div>Question Timer: <span id="question-timer">01:00</span></div>
+                    <div>Total Timer: <span id="total-timer">05:00</span></div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <div class="question-nav" id="question-nav">
+                    </div>
+
+                <div class="question" id="question"></div>
+
+                <div class="options-container" id="options-container">
+                    </div>
+
+                <div class="navigation-buttons">
+                    <button id="back-btn" class="btn"><i class="fas fa-arrow-left icon"></i> Back</button>
+                    <button id="reasoning-btn" class="btn btn-info"><i class="fas fa-lightbulb icon"></i> Show Reasoning</button>
+                    <button id="skip-btn" class="btn btn-warning"><i class="fas fa-forward icon"></i> Skip</button>
+                    <button id="next-btn" class="btn btn-success">Next <i class="fas fa-arrow-right icon"></i></button>
+                    <button id="submit-quiz-btn" class="btn btn-info"><i class="fas fa-paper-plane icon"></i> Submit</button>
+                </div>
+            </div>
+
+            <div id="result-container" class="result-container">
+                <div class="student-info" id="student-info">
+                    </div>
+
+                <h2 style="font-size: 12px; margin-bottom: 6px;">Quiz Results</h2>
+                <table class="result-table">
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Total Correct</td>
+                        <td id="total-correct">0</td>
+                    </tr>
+                    <tr>
+                        <td>Total Incorrect</td>
+                        <td id="total-incorrect">0</td>
+                    </tr>
+                    <tr>
+                        <td>Total Skipped</td>
+                        <td id="total-skipped">0</td>
+                    </tr>
+                    <tr>
+                        <td>Marks Obtained</td>
+                        <td id="marks-obtained">0</td>
+                    </tr>
+                    <tr>
+                        <td>Percentage</td>
+                        <td id="percentage">0%</td>
+                    </tr>
+                </table>
+
+                <div class="navigation-buttons">
+                    <button id="retake-quiz-btn" class="btn btn-warning"><i class="fas fa-redo icon"></i> Retake Quiz</button>
+                    <button id="show-reasoning-btn" class="btn btn-info"><i class="fas fa-book-open icon"></i> Show All Reasoning</button>
+                    <a href="https://whatsapp.com/channel/0029VbBGhht7j6g3r478FG0i" class="btn btn-success" target="_blank">
+                        <i class="fab fa-whatsapp icon"></i> Follow WhatsApp Channel
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="reasoning-modal" id="reasoning-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Question Explanation</h3>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div id="modal-body">
+                </div>
+        </div>
+    </div>
+
+    <a href="https://whatsapp.com/channel/0029VbBGhht7j6g3r478FG0i" class="whatsapp-fixed" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                question: "The brain structure that serves as a crucial link between the nervous system and the endocrine system by controlling the pituitary gland is the:",
+                options: ["Thalamus", "Hippocampus", "Hypothalamus", "Pineal gland"],
+                correct: 2,
+                reasoning: "Page 24 explicitly states this function: 'The hypothalamus also controls the pituitary gland and thereby serves as link between the nervous and endocrine system.'"
+            },
+            {
+                question: "The 'emotional brain,' which includes structures like the amygdala and hippocampus and is involved in emotions and memory, is known as the:",
+                options: ["Brainstem", "Cerebellum", "Limbic system", "Reticular formation"],
+                correct: 2,
+                reasoning: "Page 24 describes the limbic system as 'a complex set of structures that lies on both sides of the thalamus, under the cerebrum. It includes the hypothalamus, the hippocampus, the amygdala...' and Page 23 links it to emotion ('Hecte, Anger' - likely a typo for 'Hate, Anger')."
+            },
+            {
+                question: "The brain structure involved in sleep, wakefulness, and filtering sensory input is the:",
+                options: ["Cerebellum", "Reticular formation", "Amygdala", "Prefrontal cortex"],
+                correct: 1,
+                reasoning: "Page 22 (midbrain section) states: 'The Reticular Formation... is involved in sleep and wakefulness, pain perception, breathing, and muscle reflexes.' Fig 17.13(b) also depicts it."
+            },
+            {
+                question: "The fluid-filled cavities within the brain that produce and circulate cerebrospinal fluid (CSF) are called:",
+                options: ["Sulci", "Meninges", "Ventricles", "Sinuses"],
+                correct: 2,
+                reasoning: "Page 22 mentions CSF is found 'in the ventricles of brain'. Page 25 also states 'Brain is hollow structure as it has cavities called ventricles' and Fig 17.10 labels the lateral, 3rd, and 4th ventricles."
+            },
+            {
+                question: "The division of the peripheral nervous system that controls voluntary movements by activating skeletal muscles is the:",
+                options: ["Autonomic nervous system", "Somatic nervous system", "Enteric nervous system", "Sympathetic division"],
+                correct: 1,
+                reasoning: "Page 21, in Fig 17.11, the flowchart clearly shows 'Peripheral Nervous System (PNS)' branching into 'Somatic Nervous System (controls voluntary movements)' and 'Autonomic Nervous System'."
+            },
+            {
+                question: "The 'fight or flight' response, which prepares the body for stressful or energetic activity, is orchestrated by the:",
+                options: ["Parasympathetic division", "Somatic division", "Sympathetic division", "Enteric division"],
+                correct: 2,
+                reasoning: "Page 21, in the same flowchart (Fig 17.11), the Autonomic Nervous System branches into the 'Sympathetic Division (prepares the body for stressful or energetic activity; 'fight or flight')'."
+            },
+            {
+                question: "The neurotransmitter most commonly released at the neuromuscular junction to stimulate skeletal muscle contraction is:",
+                options: ["Dopamine", "Norepinephrine", "Acetylcholine", "Serotonin"],
+                correct: 2,
+                reasoning: "While not explicitly named in the text, it is a fundamental concept implied by the process of motor neuron stimulation leading to muscle contraction (Page 12, 16). This is a core fact in neurophysiology."
+            },
+            {
+                question: "The minimal stimulus strength required to depolarize a neuron and trigger an action potential is known as the:",
+                options: ["Resting potential", "All-or-none potential", "Threshold potential", "Refractory potential"],
+                correct: 2,
+                reasoning: "Page 19 defines it: 'If a stimulus is capable to bring an electrochemical change on neuron or to excite a given tissue, it is called threshold stimulus.' The graph in Fig 17.7 also labels the 'threshold potential'."
+            },
+            {
+                question: "The principle that states a neuron will fire an action potential at full strength or not at all is the:",
+                options: ["Saltatory principle", "All-or-none principle", "Synaptic principle", "Refractory principle"],
+                correct: 1,
+                reasoning: "Page 11 states: 'The contraction of a muscle fibre is normally an all-or- none phenomenon.' This principle is directly analogous and applies identically to neurons. A neuron's action potential is also all-or-none."
+            },
+            {
+                question: "The specific period during an action potential when voltage-gated sodium channels are open and the membrane cannot respond to another stimulus, regardless of strength, is the:",
+                options: ["Relative refractory period", "Absolute refractory period", "Depolarization period", "Repolarization period"],
+                correct: 1,
+                reasoning: "This is a key concept derived from the description on Page 20: 'After an action potential, nerve fiber undergoes a period of recovery... This period of recovery of nerve fiber is called refractory period.' The absolute refractory period is when it is completely unresponsive."
+            },
+            {
+                question: "The process by which a nerve impulse is converted into a chemical signal at the synapse involves the release of neurotransmitters from the:",
+                options: ["Dendrites", "Cell body (soma)", "Axon terminals", "Myelin sheath"],
+                correct: 2,
+                reasoning: "Page 14 describes the structure of a neuron: 'The axon branches at the end, forming axon terminals. These are the points where the neuron communicates with other cells.' This is where neurotransmitters are stored and released."
+            },
+            {
+                question: "Which of the following sequences correctly lists the order of structures through which a sound wave is converted into a neural impulse?",
+                options: ["Tympanic membrane → Ossicles → Cochlea → Auditory nerve → Temporal lobe", "Ossicles → Tympanic membrane → Cochlea → Auditory nerve → Frontal lobe", "Cochlea → Ossicles → Tympanic membrane → Auditory nerve → Parietal lobe", "Temporal lobe → Auditory nerve → Cochlea → Ossicles → Tympanic membrane"],
+                correct: 0,
+                reasoning: "While the detailed pathway isn't in this PDF, Page 24 mentions the temporal lobe contains the 'auditory (hearing) visual area'. This question integrates basic knowledge with the textbook's statement about lobe functions."
+            },
+            {
+                question: "A drug that inhibits the enzyme acetylcholinesterase would be expected to:",
+                options: ["Block the release of acetylcholine.", "Prolong the effects of acetylcholine in the synapse.", "Prevent the binding of acetylcholine to its receptor.", "Increase the reuptake of acetylcholine into the presynaptic neuron."],
+                correct: 1,
+                reasoning: "This tests applied knowledge. Acetylcholinesterase breaks down ACh. Inhibiting it would leave more ACh in the synaptic cleft, prolonging its stimulatory effect on the postsynaptic membrane (muscle or neuron)."
+            },
+            {
+                question: "The role of calcium ions (Ca²⁺) in both neurotransmitter release and muscle contraction is to:",
+                options: ["Serve as the primary source of energy.", "Act as a second messenger to initiate a process.", "Hyperpolarize the membrane.", "Directly bind to actin filaments."],
+                correct: 1,
+                reasoning: "This is a high-level integration question. In neurons, Ca²⁺ influx triggers vesicle fusion (neurotransmitter release). In muscle, Ca²⁺ binding to troponin initiates contraction. In both cases, it acts as a triggering signal."
+            },
+            {
+                question: "The reason a second action potential cannot be initiated during the depolarization and repolarization phases is due to the:",
+                options: ["Inactivation of voltage-gated K⁺ channels.", "Activation of the Na⁺/K⁺ pump.", "Inactivation of voltage-gated Na⁺ channels.", "Efflux of Cl⁻ ions."],
+                correct: 2,
+                reasoning: "This delves into the mechanism behind the refractory period mentioned on Page 20. After opening, voltage-gated Na⁺ channels enter an inactive state where they cannot open again until the membrane repolarizes."
+            },
+            {
+                question: "Parkinson's disease is associated with the degeneration of neurons in the midbrain that produce the neurotransmitter:",
+                options: ["Serotonin", "Acetylcholine", "GABA", "Dopamine"],
+                correct: 3,
+                reasoning: "Page 22 states: 'The midbrain... contains a system of neurons that releases the neurotransmitter dopamine.' The degeneration of these dopaminergic neurons is the core pathology of Parkinson's disease."
+            },
+            {
+                question: "The specific lobe of the cerebrum that is primarily responsible for processing visual information is the:",
+                options: ["Frontal lobe", "Parietal lobe", "Temporal lobe", "Occipital lobe"],
+                correct: 3,
+                reasoning: "Page 24 states each hemisphere contains four lobes: 'frontal, parietal, temporal and occipital lobe.' It is standard knowledge that the occipital lobe houses the primary visual cortex."
+            },
+            {
+                question: "The phenomenon of 'referred pain,' where pain from an internal organ is perceived as coming from a different area of the skin, is best explained by:",
+                options: ["The convergence of somatic and visceral sensory pathways onto the same interneurons in the spinal cord.", "The action of the sympathetic nervous system on blood vessels.", "A lesion in the somatosensory cortex.", "The release of endorphins in the brain."],
+                correct: 0,
+                reasoning: "This tests the ability to apply the concept of neural pathways (Page 16) to a classic physiological phenomenon. The brain misinterprets the source because it's more accustomed to receiving signals from the skin."
+            },
+            {
+                question: "The flexibility of the human skeleton, allowing for a wide range of movements, is primarily due to the presence of:",
+                options: ["A rigid bony framework", "The axial skeleton only", "Various types of joints", "The appendicular skeleton only"],
+                correct: 2,
+                reasoning: "This integrates the concept from Page 4: 'Joints have two fundamental functions: they give mobility to the skeleton and how the skeletal parts together.' Different joints allow different types of movement (e.g., hinge vs. ball-and-socket)."
+            },
+            {
+                question: "The constant, slight tension in a resting muscle that helps maintain posture is known as:",
+                options: ["Tetany", "Muscle tone", "Fatigue", "Summation"],
+                correct: 1,
+                reasoning: "This is a key physiological concept related to the all-or-none principle and motor unit recruitment (Page 12). Muscle tone is achieved by the asynchronous, low-level contraction of a small number of motor units."
+            },
+            {
+                question: "The primary energy source for muscle contraction during short, intense bursts of activity (e.g., a 100m sprint) is:",
+                options: ["Aerobic respiration", "Stored ATP and creatine phosphate", "Anaerobic glycolysis", "Beta-oxidation of fats"],
+                correct: 2,
+                reasoning: "While not detailed in the text, Page 8 mentions muscle fibers contain 'large amount of stored glycogen.' Glycogen is broken down anaerobically (glycolysis) for rapid ATP production in the absence of sufficient oxygen."
+            },
+            {
+                question: "The role of the cerebellum in learning a new skill, like playing the piano, is to:",
+                options: ["Initiate the conscious desire to learn.", "Store the memory of the musical piece.", "Coordinate the timing and sequence of finger movements.", "Regulate the emotional enjoyment of the music."],
+                correct: 2,
+                reasoning: "Page 25 ascribes this function to the cerebellum: 'coordination of the actions of individual muscles to produce complex activities such as walking, running, riding bicycles, doing delicate work with hand.'"
+            },
+            {
+                question: "The brain structure that would be most active in triggering a fear response (e.g., jumping at a sudden loud noise) is the:",
+                options: ["Prefrontal cortex", "Amygdala", "Hippocampus", "Medulla oblongata"],
+                correct: 1,
+                reasoning: "Page 24 directly links the amygdala to fear: 'The amygdalae... control feeling and emotions of love, hate, anger, fear, rage and sexual arousal.'"
+            },
+            {
+                question: "The process by which the brain filters out irrelevant sensory information, allowing you to focus on a conversation in a noisy room, involves the:",
+                options: ["Spinal cord", "Reticular formation", "Hypothalamus", "Cerebellum"],
+                correct: 1,
+                reasoning: "Page 22 attributes this function to the reticular formation, which is 'involved in sleep and wakefulness, pain perception, breathing, and muscle reflexes.' It acts as a filter for sensory input."
+            },
+            {
+                question: "If the dorsal root of a spinal nerve is severed, the most likely result would be a loss of:",
+                options: ["Motor function in the affected area", "Sensation in the affected area", "Both sensation and motor function", "Reflex activity only"],
+                correct: 1,
+                reasoning: "This applies the reflex arc knowledge from Page 16. The dorsal root contains sensory neurons ('Arrival of stimulus and activation of receptor'). Severing it would block sensory input to the spinal cord."
+            },
+            {
+                question: "The specific ion responsible for the repolarization phase of the action potential is:",
+                options: ["Sodium (Na⁺) flowing into the cell", "Sodium (Na⁺) flowing out of the cell", "Potassium (K⁺) flowing into the cell", "Potassium (K⁺) flowing out of the cell"],
+                correct: 3,
+                reasoning: "Page 19 describes the repolarization mechanism: 'it becomes more permeable to K⁺ which rapidly diffuses out from cytoplasm to extracellular fluid due to the opening of K⁺ gates.'"
+            },
+            {
+                question: "The purpose of the blood-brain barrier is to:",
+                options: ["Facilitate the rapid entry of hormones into the brain.", "Protect the brain from harmful substances in the blood.", "Allow free exchange of ions between blood and brain tissue.", "Increase blood flow to active areas of the brain."],
+                correct: 1,
+                reasoning: "Page 21 mentions 'Protection of brain and spinal cord' as a key function. The blood-brain barrier is a selective barrier (formed by astrocytes) that prevents many toxins and pathogens in the blood from entering the brain tissue."
+            },
+            {
+                question: "The type of bone fracture where the bone breaks into multiple fragments is termed a:",
+                options: ["Greenstick fracture", "Comminuted fracture", "Spiral fracture", "Stress fracture"],
+                correct: 1,
+                reasoning: "This tests standard terminology related to the bone repair process mentioned on Pages 2-3. A comminuted fracture involves the bone shattering into pieces, making it more complex to heal."
+            },
+            {
+                question: "The role of phosphocreatine (creatine phosphate) in muscle fibers is to:",
+                options: ["Directly slide the actin filaments.", "Bind calcium ions from the sarcoplasm.", "Quickly regenerate ATP from ADP.", "Act as the final electron acceptor in aerobic respiration."],
+                correct: 2,
+                reasoning: "This is a fundamental concept in muscle energy metabolism. Phosphocreatine provides a rapid, short-term energy reserve to replenish ATP before other pathways (glycolysis, aerobic respiration) can take over."
+            },
+            {
+                question: "The specific type of synovial joint found at the base of the thumb (between the trapezium and first metacarpal) that allows for opposition is a:",
+                options: ["Hinge joint", "Pivot joint", "Condyloid joint", "Saddle joint"],
+                correct: 3,
+                reasoning: "This tests knowledge beyond the two types mentioned in the text (hinge and ball-and-socket). The thumb's saddle joint is unique and allows for the wide range of motion, including opposition, which is crucial for grip."
+            },
+            {
+                question: "The term for the inability to coordinate muscle movements, leading to jerky, unsteady motion, is:",
+                options: ["Paralysis", "Ataxia", "Spasticity", "Tetany"],
+                correct: 1,
+                reasoning: "This is a clinical term related to the function of the cerebellum described on Page 25. Damage to the cerebellum, which controls coordination, results in ataxia."
+            },
+            {
+                question: "The process by which the strength of a signal is amplified as it passes from one neuron to the next, often through multiple synapses, is called:",
+                options: ["Saltatory conduction", "Spatial summation", "Synaptic potentiation", "Temporal summation"],
+                correct: 1,
+                reasoning: "This delves deeper into neural integration. Spatial summation occurs when multiple presynaptic neurons fire simultaneously and their combined effect is enough to reach threshold in the postsynaptic neuron, thus amplifying the signal."
+            },
+            {
+                question: "A patient presents with memory loss for recent events but can recall childhood memories clearly. This suggests potential damage to the:",
+                options: ["Amygdala", "Hippocampus", "Thalamus", "Hypothalamus"],
+                correct: 1,
+                reasoning: "Page 25 directly links the hippocampus to the transfer of information from short-term to long-term memory. Damage would impair the formation of *new* long-term memories, while old, consolidated memories remain."
+            },
+            {
+                question: "The reason why your hand withdraws from a hot object before you even feel the pain is because:",
+                options: ["The brain processes the pain signal very slowly.", "The reflex arc involves a short pathway through the spinal cord.", "The sensory neuron directly stimulates the motor neuron.", "The thermoreceptors in the skin are very slow to adapt."],
+                correct: 1,
+                reasoning: "Page 16 explains this precisely: 'reflex activities have no involvement of brain; therefore the pathway of nerve impulse is slightly modified and quick than the general pathway'. This allows for a protective response before the sensory information even reaches the brain for conscious perception."
+            },
+            {
+                question: "The specific component of the thin filament that has a binding site for calcium ions is:",
+                options: ["Actin", "Tropomyosin", "Troponin", "Myosin"],
+                correct: 2,
+                reasoning: "Page 10 is clear: 'Troponin is a calcium-regulatory protein for the calcium regulation of contractile function'. Calcium binds to troponin, causing a shape change that moves tropomyosin away from actin's binding sites."
+            },
+            {
+                question: "The part of the brain that acts as a 'master clock,' regulating circadian rhythms (sleep-wake cycles), is the:",
+                options: ["Pineal gland", "Suprachiasmatic nucleus (SCN) of the hypothalamus", "Reticular formation", "Pons"],
+                correct: 1,
+                reasoning: "While the SCN isn't named, Page 24 states the hypothalamus controls the 'sleep wake cycle.' The SCN is a specific nucleus within the hypothalamus that is the primary circadian pacemaker."
+            },
+            {
+                question: "The type of glial cell that forms the myelin sheath in the peripheral nervous system is the:",
+                options: ["Oligodendrocyte", "Astrocyte", "Schwann cell", "Microglia"],
+                correct: 2,
+                reasoning: "Page 14 explicitly states: 'Myelin is a lipid produced by a type of a glial cell known as a Schwann cell.' Oligodendrocytes perform this function in the CNS."
+            },
+            {
+                question: "The condition characterized by a decrease in bone density, making bones porous and fragile, is:",
+                options: ["Osteoarthritis", "Osteoporosis", "Osteogenesis imperfecta", "Rickets"],
+                correct: 1,
+                reasoning: "This is a direct application of bone composition (Page 1) and remodeling (Page 3). Osteoporosis involves an imbalance where osteoclast activity outpaces osteoblast activity, leading to a loss of the inorganic matrix and bone mass."
+            },
+            {
+                question: "The neurotransmitter associated with the sympathetic nervous system's 'fight or flight' response is:",
+                options: ["Acetylcholine", "Norepinephrine (Noradrenaline)", "Dopamine", "Serotonin"],
+                correct: 1,
+                reasoning: "This is a fundamental concept of autonomic physiology. While the text names the divisions (Page 21), it's core knowledge that norepinephrine is the primary neurotransmitter released by most postganglionic sympathetic neurons."
+            },
+            {
+                question: "The function of the transverse (T) tubules in a muscle fiber is to:",
+                options: ["Store calcium ions.", "Conduct the action potential deep into the muscle cell.", "Synthesize ATP.", "Anchor the myofibrils."],
+                correct: 1,
+                reasoning: "Page 8 describes the pathway: 'The nerve impulse is carried through the T-tubule to the adjacent sarcoplasmic reticulum.' This impulse causes the SR to release Ca²⁺."
+            },
+            {
+                question: "The avascular nature of cartilage, which leads to a very slow healing process, is a characteristic shared by which types?",
+                options: ["Hyaline only", "Elastic only", "Fibrocartilage only", "Hyaline, Elastic, and Fibrocartilage"],
+                correct: 3,
+                reasoning: "Page 1 states that unlike other connective tissues, cartilage does not contain blood vessels. This is a fundamental property of all cartilage types, making them reliant on diffusion for nutrient supply and waste removal, hence the slow healing."
+            },
+            {
+                question: "The rigid yet strong nature of bone is primarily due to the composition of its matrix, which consists of:",
+                options: ["35% collagen and 65% calcium salts.", "65% collagen and 35% calcium salts.", "50% collagen and 50% calcium salts.", "75% collagen and 25% calcium salts."],
+                correct: 0,
+                reasoning: "Page 1 explicitly states the matrix consists of 'about 65% inorganic matter (calcium phosphate, carbonate etc) and about 35% organic substances (protein, Type I collagen)'. The inorganic salts provide rigidity and compression strength, while the organic collagen provides tensile strength and flexibility."
+            },
+            {
+                question: "Which cell type is solely responsible for the dissolution of bone matrix and the release of minerals like calcium into the bloodstream?",
+                options: ["Osteoblasts", "Osteocytes", "Osteoclasts", "Chondrocytes"],
+                correct: 2,
+                reasoning: "Page 3 clearly defines the role of osteoclasts: 'Osteoclasts dissolve minerals in bone matrix and release them back into the blood.' This is a key function in bone remodeling and mineral homeostasis."
+            },
+            {
+                question: "Appositional growth, which increases the diameter of a bone, is a function of cells located in the:",
+                options: ["Bone marrow", "Endosteum", "Periosteum", "Articular cartilage"],
+                correct: 2,
+                reasoning: "Page 2 states, 'Below the periosteum is a layer of bone forming cells or osteoblast. It secrets bone substance, which helps in increasing the thickness or diameter of bone.' This describes appositional growth."
+            },
+            {
+                question: "The structural and functional unit of compact bone, consisting of a central canal and concentric lamellae, is known as a(n):",
+                options: ["Osteon", "Trabecula", "Lacunae", "Canaliculi"],
+                correct: 0,
+                reasoning: "Page 2 describes the 'Haversian System,' which is synonymous with an osteon. It is defined as the 'haversian canal together with its surrounding lamellae, lacunae and canaliculi.'"
+            },
+            {
+                question: "In adults, the site of red blood cell production (hematopoiesis) is the red bone marrow, which is primarily found in:",
+                options: ["The shafts of long bones", "The diaphysis of all bones", "Spongy bone of vertebrae, ribs, and pelvis", "The medullary cavity of weight-bearing bones"],
+                correct: 2,
+                reasoning: "Page 3 specifies the location of red marrow: 'Red bone marrow—found in spongy bone, the ends of long bones, ribs, vertebrae, the sternum, and the pelvis—produces red blood cells, platelets, and white blood cells.'"
+            },
+            {
+                question: "The dynamic process of bone remodeling under the direction of osteocytes involves a balance between:",
+                options: ["Osteoblasts making new bone and osteoclasts breaking it down.", "Osteocytes regulating minerals and chondrocytes producing cartilage.", "Osteoclasts building bone and osteoblasts storing minerals.", "Chondrocytes forming model and osteoblasts replacing it."],
+                correct: 0,
+                reasoning: "Page 3 states, 'Under the direction of osteocytes, osteoblasts continuously build up bone, while osteoclasts continuously break it down.' This highlights the continuous and balanced process of remodeling."
+            },
+            {
+                question: "Structurally, a suture in the skull is classified as a fibrous joint because:",
+                options: ["It allows slight movement for childbirth.", "It is connected by hyaline cartilage.", "A thin layer of fibrous connective tissue holds the bones firmly.", "It contains a fluid-filled synovial cavity."],
+                correct: 2,
+                reasoning: "Page 4 defines fibrous joints: 'In fibrous joints, a thin layer of fibrous connective tissue holds the bones firmly in position. There is no joint cavity...Fibrous joints are formed between the bones of skull'."
+            },
+            {
+                question: "A symphysis, such as the intervertebral disc, is a type of cartilaginous joint characterized by:",
+                options: ["A synovial cavity and great mobility.", "Being connected by fibrocartilage and allowing slight movement.", "Dense fibrous tissue and complete immovability.", "A connection via hyaline cartilage only, with no movement."],
+                correct: 1,
+                reasoning: "Page 5 states, 'Cartilaginous joints are connected entirely by fibrocartilage or hyaline cartilage...allow slight movement. Such joints are formed between vertebrae'."
+            },
+            {
+                question: "The defining feature that distinguishes synovial joints from other types is the presence of a:",
+                options: ["Fibrous capsule", "Layer of cartilage", "Fluid-containing joint cavity", "Network of ligaments"],
+                correct: 2,
+                reasoning: "Page 5 provides the structural classification: 'Synovial joints are those in which the articulating bones are separated by a fluid-containing joint cavity (synovial cavity).'"
+            },
+            {
+                question: "The elbow joint is a classic example of a hinge joint because its articular surfaces:",
+                options: ["Are spherical and fit into a cup-like socket.", "Include a cylindrical projection fitting into a trough.", "Are flat and allow sliding movements.", "Are saddle-shaped permitting opposition."],
+                correct: 1,
+                reasoning: "Page 5 describes hinge joints: 'In hinge joints, a cylindrical projection of one bone fits into a trough-shaped surface on another.' Figure 16.10 specifically labels the elbow as a hinge joint."
+            },
+            {
+                question: "The hip joint is capable of multiaxial movement due to its classification as a:",
+                options: ["Hinge joint", "Pivot joint", "Ball-and-socket joint", "Gliding joint"],
+                correct: 2,
+                reasoning: "Page 5 states, 'In ball-and-socket joints the spherical or hemispherical head of one bone articulates with the cuplike socket of another. These joints are the most freely moving synovial joints. The shoulder and hip joints are examples.'"
+            },
+            {
+                question: "The strength and stability of synovial joints are primarily enhanced by:",
+                options: ["The viscosity of synovial fluid", "Bandlike ligaments", "The presence of bursae", "Articular cartilage"],
+                correct: 1,
+                reasoning: "Page 5 states, 'Synovial joints are reinforced and strengthened by a number of bandlike ligaments. These ligaments hold the bones in position.'"
+            },
+            {
+                question: "The distinguishing characteristic that allows skeletal muscle to be classified as 'striated' is the presence of:",
+                options: ["Multiple nuclei per cell", "A well-developed sarcoplasmic reticulum", "Alternating dark A and light I bands", "Voluntary nervous control"],
+                correct: 2,
+                reasoning: "Pages 6 and 8 describe skeletal muscle fibers as 'having obvious stripes called striations' and the myofibrils having 'alternate light and dark bands, which give the fibre its 'striped' appearances.'"
+            },
+            {
+                question: "Intercalated discs, which are critical for rapid impulse propagation and synchronized contraction, are a unique feature of:",
+                options: ["Skeletal muscle tissue", "Cardiac muscle tissue", "Smooth muscle tissue", "Both skeletal and cardiac muscle tissue"],
+                correct: 1,
+                reasoning: "Page 7 has a heading '**Contain Intercalated disc cell-to-cell attachment.**' above the section on cardiac muscle. The text and Fig 16.16 show these structures, which are absent in skeletal and smooth muscle."
+            },
+            {
+                question: "The walls of hollow visceral organs, such as the stomach and urinary bladder, are composed of which type of muscle?",
+                options: ["Skeletal", "Cardiac", "Smooth", "Striated"],
+                correct: 2,
+                reasoning: "Page 7 states, 'Smooth muscles are found in the walls of hollow visceral organs, such as the stomach, urinary bladder, respiratory passages, and blood vessels.'"
+            },
+            {
+                question: "The fundamental contractile unit of a myofibril, defined as the segment between two successive Z-lines, is the:",
+                options: ["Sarcolemma", "Sarcoplasmic reticulum", "Sarcomere", "Myofilament"],
+                correct: 2,
+                reasoning: "Page 8 provides the definition: 'A sarcomere is the region of a myofibril between two successive Z-line. The region of myofibril is the sarcomere, which is the functional unit of the contraction process in the muscles.'"
+            },
+            {
+                question: "Within a sarcomere, the dark A band primarily consists of:",
+                options: ["Thin actin filaments only", "Thick myosin filaments only", "Overlapping actin and myosin filaments", "The elastic filament titin"],
+                correct: 2,
+                reasoning: "Page 9 and Fig 16.19 show that the A-band is the length of the myosin filaments. The ends of the A-band are dark due to the overlap of actin and myosin, while the central H-zone is lighter where only myosin is present."
+            },
+            {
+                question: "The regulatory protein complex that binds calcium ions during muscle contraction, initiating a conformational change, is:",
+                options: ["Tropomyosin", "Troponin", "Myosin head", "Actin"],
+                correct: 1,
+                reasoning: "Page 10 states, 'Troponin is a calcium-regulatory protein for the calcium regulation of contractile function... Troponin and tropomyosin help control the myosin actin interactions involved in contraction.'"
+            },
+            {
+                question: "According to the sliding filament hypothesis proposed by Huxley, what actually shortens during muscle contraction?",
+                options: ["The myosin filaments", "The actin filaments", "The A bands", "The sarcomeres"],
+                correct: 3,
+                reasoning: "Page 10 explains the hypothesis: 'the thick and thin filaments of the muscles fibre slide past each other but are not changed in length.' As the filaments slide, the distance between Z-lines decreases, shortening the sarcomere and thus the entire muscle fiber."
+            },
+            {
+                question: "The immediate trigger for the release of calcium ions from the sarcoplasmic reticulum into the sarcoplasm is:",
+                options: ["The binding of ATP to the myosin head", "The arrival of an action potential via the T-tubules", "The direct stimulation of the muscle by a hormone", "The depletion of oxygen in the muscle cell"],
+                correct: 1,
+                reasoning: "Page 8 describes the pathway: 'The nerve impulse is carried through the T-tubule to the adjacent sarcoplasmic reticulum.' This impulse causes the SR to release Ca²⁺."
+            },
+            {
+                question: "The state of muscle fiber relaxation is achieved when:",
+                options: ["Action potentials continuously stimulate the fiber.", "Calcium ions are actively pumped back into the sarcoplasmic reticulum.", "Myosin heads remain firmly bound to actin.", "ATP levels in the cell are depleted."],
+                correct: 1,
+                reasoning: "Page 11 describes relaxation: 'the sarcoplasmic reticulum begins to re-accumulate the calcium ions by active transport. Once most of the calcium is sequestered... the binding between the myosin heads and the actin filaments can no longer occur.'"
+            },
+            {
+                question: "Fine control of muscular force, such as lifting a pencil versus a heavy book, is primarily achieved by:",
+                options: ["Each muscle fiber contracting with more force.", "Recruiting a different number of motor units.", "Changing the type of joint involved in the movement.", "Switching from aerobic to anaerobic metabolism."],
+                correct: 1,
+                reasoning: "Page 12 discusses the all-or-none principle, where a muscle fiber contracts fully or not at all. Therefore, 'the contraction force is dependent upon the number of contracting muscle fibers.' A motor unit consists of a single neuron and the muscle fibers it innervates. By varying the number of motor units recruited, the force can be precisely controlled."
+            }
+        ];
+
+        // DOM Elements
+        const loginForm = document.getElementById('login-form');
+        const studentForm = document.getElementById('student-form');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result-container');
+        const questionNav = document.getElementById('question-nav');
+        const reasoningModal = document.getElementById('reasoning-modal');
+        const modalBody = document.getElementById('modal-body');
+        const closeModal = document.getElementById('close-modal');
+
+        const accessCodeInput = document.getElementById('access-code');
+        const loginBtn = document.getElementById('login-btn');
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+
+        const questionElement = document.getElementById('question');
+        const optionsContainer = document.getElementById('options-container');
+        const progressBar = document.getElementById('progress-bar');
+        const questionTimerElement = document.getElementById('question-timer');
+        const totalTimerElement = document.getElementById('total-timer');
+
+        const backBtn = document.getElementById('back-btn');
+        const reasoningBtn = document.getElementById('reasoning-btn');
+        const skipBtn = document.getElementById('skip-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitQuizBtn = document.getElementById('submit-quiz-btn');
+
+        const retakeQuizBtn = document.getElementById('retake-quiz-btn');
+        const showReasoningBtn = document.getElementById('show-reasoning-btn');
+        const studentInfoElement = document.getElementById('student-info');
+
+        // Error elements
+        const loginError = document.getElementById('login-error');
+        const nameError = document.getElementById('name-error');
+        const fatherError = document.getElementById('father-error');
+        const mdcatError = document.getElementById('mdcat-error');
+        const fscError = document.getElementById('fsc-error');
+        const metricError = document.getElementById('metric-error');
+
+        // Quiz state variables
+        let currentQuestion = 0;
+        let answers = [];
+        let questionTimeLeft = 60;
+        let totalTimeLeft = quizData.length * 60;
+        let questionTimerInterval;
+        let totalTimerInterval;
+        let studentData = {};
+
+        // Event Listeners
+        loginBtn.addEventListener('click', handleLogin);
+        startQuizBtn.addEventListener('click', startQuiz);
+        backBtn.addEventListener('click', goToPreviousQuestion);
+        reasoningBtn.addEventListener('click', showReasoning);
+        skipBtn.addEventListener('click', skipQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+        submitQuizBtn.addEventListener('click', submitQuiz);
+        retakeQuizBtn.addEventListener('click', retakeQuiz);
+        showReasoningBtn.addEventListener('click', showAllReasoning);
+        closeModal.addEventListener('click', () => {
+            reasoningModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === reasoningModal) {
+                reasoningModal.style.display = 'none';
+            }
+        });
+
+        // Allow Enter key to submit forms
+        accessCodeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
+        // Functions
+        function handleLogin() {
+            const accessCode = accessCodeInput.value.trim();
+
+            if (accessCode === 'Pre-Medix-02') {
+                loginError.style.display = 'none';
+                loginForm.classList.remove('active');
+                studentForm.classList.add('active');
+            } else if (accessCode === 'Dev-PreMedix-2025') {
+                loginError.style.display = 'none';
+                alert('Developer access granted!');
+                // Directly show quiz for developer
+                loginForm.classList.remove('active');
+                quizContainer.classList.add('active');
+                initializeQuiz();
+            } else {
+                loginError.style.display = 'block';
+            }
+        }
+
+        function validateStudentForm() {
+            let isValid = true;
+
+            // Reset errors
+            nameError.style.display = 'none';
+            fatherError.style.display = 'none';
+            mdcatError.style.display = 'none';
+            fscError.style.display = 'none';
+            metricError.style.display = 'none';
+
+            // Validate name
+            if (!studentData.name || studentData.name.trim() === '') {
+                nameError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate father's name
+            if (!studentData.fatherName || studentData.fatherName.trim() === '') {
+                fatherError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate MDCAT appearance
+            if (!studentData.mdcatAppearance) {
+                mdcatError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate FSC marks
+            const fscMarks = parseInt(studentData.fscMarks);
+            const fscTotal = parseInt(studentData.fscTotal);
+            if (isNaN(fscMarks) || fscMarks < 0 || fscMarks > fscTotal) {
+                fscError.style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate Metric marks
+            const metricMarks = parseInt(studentData.metricMarks);
+            const metricTotal = parseInt(studentData.metricTotal);
+            if (isNaN(metricMarks) || metricMarks < 0 || metricMarks > metricTotal) {
+                metricError.style.display = 'block';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function startQuiz() {
+            // Collect student data
+            studentData = {
+                name: document.getElementById('student-name').value,
+                fatherName: document.getElementById('father-name').value,
+                mdcatAppearance: document.getElementById('mdcat-appearance').value,
+                fscMarks: document.getElementById('fsc-marks').value,
+                fscTotal: document.getElementById('fsc-total').value,
+                metricMarks: document.getElementById('metric-marks').value,
+                metricTotal: document.getElementById('metric-total').value
+            };
+
+            // Validate form
+            if (!validateStudentForm()) {
+                return;
+            }
+
+            studentForm.classList.remove('active');
+            quizContainer.classList.add('active');
+
+            // Initialize quiz
+            initializeQuiz();
+        }
+
+        function initializeQuiz() {
+            // Create question navigation buttons
+            questionNav.innerHTML = '';
+            quizData.forEach((_, index) => {
+                const button = document.createElement('button');
+                button.className = 'question-btn';
+                button.textContent = index + 1;
+                button.addEventListener('click', () => {
+                    currentQuestion = index;
+                    loadQuestion();
+                });
+                questionNav.appendChild(button);
+            });
+
+            // Initialize answers array
+            answers = new Array(quizData.length).fill(undefined);
+
+            // Load first question
+            loadQuestion();
+            startTimers();
+        }
+
+        function loadQuestion() {
+            const question = quizData[currentQuestion];
+            questionElement.innerHTML = `<b>${currentQuestion + 1}. ${question.question}</b>`;
+
+            // Update progress bar
+            progressBar.style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
+
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+
+            // Add new options
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                if (answers[currentQuestion] !== undefined && answers[currentQuestion] === index) {
+                    optionElement.classList.add('selected');
+                }
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+
+            // Update navigation buttons
+            backBtn.disabled = currentQuestion === 0;
+            nextBtn.disabled = false;
+            submitQuizBtn.style.display = currentQuestion === quizData.length - 1 ? 'block' : 'none';
+            nextBtn.style.display = currentQuestion === quizData.length - 1 ? 'none' : 'block';
+
+            // Update question navigation
+            updateQuestionNavigation();
+
+            // Reset question timer
+            questionTimeLeft = 60;
+            updateQuestionTimer();
+        }
+
+        function updateQuestionNavigation() {
+            const navButtons = questionNav.querySelectorAll('.question-btn');
+            navButtons.forEach((button, index) => {
+                button.classList.remove('current', 'answered');
+
+                if (index === currentQuestion) {
+                    button.classList.add('current');
+                }
+
+                if (answers[index] !== undefined) {
+                    button.classList.add('answered');
+                }
+            });
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            updateQuestionNavigation();
+            loadQuestion();
+        }
+
+        function showReasoning() {
+            const question = quizData[currentQuestion];
+            modalBody.innerHTML = `
+                <h4>${currentQuestion + 1}. ${question.question}</h4>
+                <p><strong>Correct Answer:</strong> ${question.options[question.correct]}</p>
+                <p><strong>Explanation:</strong> ${question.reasoning}</p>
+            `;
+            reasoningModal.style.display = 'flex';
+        }
+
+        function goToPreviousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+
+        function skipQuestion() {
+            answers[currentQuestion] = undefined;
+            updateQuestionNavigation();
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                submitQuiz();
+            }
+        }
+
+        function goToNextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                submitQuiz();
+            }
+        }
+
+        function startTimers() {
+            // Clear any existing timers
+            clearInterval(questionTimerInterval);
+            clearInterval(totalTimerInterval);
+
+            // Question timer
+            questionTimerInterval = setInterval(() => {
+                questionTimeLeft--;
+                updateQuestionTimer();
+
+                if (questionTimeLeft <= 0) {
+                    clearInterval(questionTimerInterval);
+                    goToNextQuestion();
+                }
+            }, 1000);
+
+            // Total timer
+            totalTimerInterval = setInterval(() => {
+                totalTimeLeft--;
+                updateTotalTimer();
+
+                if (totalTimeLeft <= 0) {
+                    clearInterval(totalTimerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateQuestionTimer() {
+            const minutes = Math.floor(questionTimeLeft / 60);
+            const seconds = questionTimeLeft % 60;
+            questionTimerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color when time is running out
+            if (questionTimeLeft <= 10) {
+                questionTimerElement.style.color = '#e63946';
+            } else {
+                questionTimerElement.style.color = 'inherit';
+            }
+        }
+
+        function updateTotalTimer() {
+            const minutes = Math.floor(totalTimeLeft / 60);
+            const seconds = totalTimeLeft % 60;
+            totalTimerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color when time is running out
+            if (totalTimeLeft <= 60) {
+                totalTimerElement.style.color = '#e63946';
+            } else {
+                totalTimerElement.style.color = 'inherit';
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(questionTimerInterval);
+            clearInterval(totalTimerInterval);
+
+            quizContainer.classList.remove('active');
+            resultContainer.classList.add('active');
+
+            // Calculate results
+            let correct = 0;
+            let incorrect = 0;
+            let skipped = 0;
+
+            answers.forEach((answer, index) => {
+                if (answer === undefined) {
+                    skipped++;
+                } else if (answer === quizData[index].correct) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            });
+
+            const totalMarks = quizData.length;
+            const marksObtained = correct;
+            const percentage = ((correct / totalMarks) * 100).toFixed(2);
+
+            // Update result table
+            document.getElementById('total-correct').textContent = correct;
+            document.getElementById('total-incorrect').textContent = incorrect;
+            document.getElementById('total-skipped').textContent = skipped;
+            document.getElementById('marks-obtained').textContent = `${marksObtained}/${totalMarks}`;
+            document.getElementById('percentage').textContent = `${percentage}%`;
+
+            // Display student info
+            studentInfoElement.innerHTML = `
+                <h3>Student Information</h3>
+                <p><strong>Name:</strong> ${studentData.name}</p>
+                <p><strong>Father's Name:</strong> ${studentData.fatherName}</p>
+                <p><strong>MDCAT Appearance:</strong> ${studentData.mdcatAppearance.charAt(0).toUpperCase() + studentData.mdcatAppearance.slice(1)}</p>
+                <p><strong>FSC Marks:</strong> ${studentData.fscMarks}/${studentData.fscTotal}</p>
+                <p><strong>Metric Marks:</strong> ${studentData.metricMarks}/${studentData.metricTotal}</p>
+            `;
+        }
+
+        function showAllReasoning() {
+            const reasoningContainer = document.createElement('div');
+            reasoningContainer.className = 'reasoning-container';
+            reasoningContainer.style.marginTop = '0';
+
+            quizData.forEach((question, index) => {
+                const reasoningItem = document.createElement('div');
+                reasoningItem.className = 'reasoning-item';
+
+                // Determine if the answer was correct, incorrect, or skipped
+                let answerStatus = '';
+                if (answers[index] === undefined) {
+                    answerStatus = '<span style="color: #6c757d;">(Skipped)</span>';
+                } else if (answers[index] === question.correct) {
+                    answerStatus = '<span style="color: #4ade80;">(Correct)</span>';
+                } else {
+                    answerStatus = '<span style="color: #f87171;">(Incorrect)</span>';
+                }
+
+                reasoningItem.innerHTML = `
+                    <h4>Question ${index + 1}: ${question.question} ${answerStatus}</h4>
+                    <p><strong>Your Answer:</strong> ${answers[index] !== undefined ? question.options[answers[index]] : 'Skipped'}</p>
+                    <p><strong>Correct Answer:</strong> ${question.options[question.correct]}</p>
+                    <p><strong>Reasoning:</strong> ${question.reasoning}</p>
+                `;
+
+                reasoningContainer.appendChild(reasoningItem);
+            });
+
+            modalBody.innerHTML = '';
+            modalBody.appendChild(reasoningContainer);
+            reasoningModal.style.display = 'flex';
+        }
+
+        function retakeQuiz() {
+            if (confirm('Are you sure you want to retake the quiz? Your current progress will be lost.')) {
+                // Reset quiz state
+                currentQuestion = 0;
+                answers = [];
+                questionTimeLeft = 60;
+                totalTimeLeft = quizData.length * 60;
+
+                // Show quiz container
+                resultContainer.classList.remove('active');
+                quizContainer.classList.add('active');
+
+                // Re-initialize quiz
+                initializeQuiz();
+            }
+        }
+    </script>
+</body>
+</html>
